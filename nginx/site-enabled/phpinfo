@@ -2,7 +2,7 @@ server {
         listen 80;
         listen [::]:80;
         root /var/www/;
-        info.php;
+        index info.php;
         server_name  info.esgi.local;
 
         client_max_body_size 100M;
