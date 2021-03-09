@@ -36,11 +36,6 @@ Reverse Proxy ( wiki.esgi.local)
 10. HA malgré l'arret d'un service ( serveur Web / serveur de base MariaDB )
 
 TP à rendre pour le vendredi 12 mars 23:59:59
-83.159.86.56
-port 7222
-incoming
-user : rendu
-mdp : rendu
 
 5SRC2.Nom.Prenom.HA.gz
 
