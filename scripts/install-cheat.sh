@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 apt install git lynx curl htop net-tools xz-utils mlocate rsync

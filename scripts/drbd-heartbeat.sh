@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 # edit variables to match yours
