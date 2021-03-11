@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 apt install git lynx curl htop net-tools xz-utils mlocate rsync php php-gd php-mysql php-xml php-fpm php-mbstring openssl php-tidy php-curl php-zip mariadb-server composer nginx -y
 

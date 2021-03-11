@@ -1,0 +1,16 @@
+# log settings
+logfile /var/log/heartbeat.log
+logfacility daemon
+# nodes hostname
+node primary_node_hostname
+node secondary_node_hostname
+# interval in seconds to check node status
+keepalive 1
+# interval in seconds after what the node is flagged dead
+deadtime 4
+# the network card to listen on
+bcast network_adapter
+# gateway ip address to check internet connectivity
+ping gateway
+# enable to change primary node when the primary node comes back online
+auto_failback yes

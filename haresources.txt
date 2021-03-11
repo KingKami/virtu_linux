@@ -1,1 +1,0 @@
-debian IPaddr::192.168.1.100/24/ens33:0 drbddisk::wiki Filesystem::/dev/drbd0::/mnt/drbd::xfs nginx mysql

@@ -1,0 +1,2 @@
+# hostname IPaddr::<your virtual ip>/<mask>/<network interface>:0 drbddisk::<resource name> Filesystem::<drbd disk name>::<filesystem> <service to manage on secondary nodes>
+primary_node_hostname IPaddr::virtual_ip/mask/network_adapter:0 drbddisk::drbd_resource_name Filesystem::drbd_device_name::drbd_mount_point::xfs nginx mysql

@@ -1,15 +1,24 @@
 #!/bin/bash
+set -e
+
+LV_ROOT="/dev/mapper/vg2-lv_root"
+LV_VAR="/dev/mapper/vg2-lv_var"
+LV_SWAP="/dev/mapper/vg2-lv_swap"
+BOOT_DEVICE="/dev/md0"
+
+ZRAM_SIZE_MB=100
+
+BOOT_UUID=$(blkid ${BOOT_DEVICE} | cut -d " " -f 2)
+ROOT_UUID=$(blkid ${LV_ROOT} | cut -d " " -f 2)
+VAR_UUID=$(blkid ${LV_VAR} | cut -d " " -f 2)
+SWAP_UUID=$(blkid ${LV_SWAP} | cut -d " " -f 2)
+
+# configuration zram
 echo -e "zram" > /etc/modules-load.d/zram.conf
 echo -e "options zram num_devices=1" > /etc/modprobe.d/zram.conf
-echo -e 'KERNEL=="zram0", ATTR{disksize}="100M",TAG+="systemd"' > /etc/udev/rules.d/99-zram.rules
+echo -e "KERNEL=='zram0', ATTR{disksize}='${ZRAM_SIZE_MB}M',TAG+='systemd'" > /etc/udev/rules.d/99-zram.rules
 
-# remplacer les chemins par vos valeurs
-
-BOOT_UUID=$(blkid /dev/md0 | cut -d " " -f 2)
-ROOT_UUID=$(blkid /dev/mapper/vg2-lv_root | cut -d " " -f 2)
-VAR_UUID=$(blkid /dev/mapper/vg2-lv_var | cut -d " " -f 2)
-SWAP_UUID=$(blkid /dev/mapper/vg2-lv_swap | cut -d " " -f 2)
-
+# regenerate fstab
 echo -e "# /etc/fstab: static file system information." > /etc/fstab
 echo -e "#" >> /etc/fstab
 echo -e "# Use 'blkid' to print the universally unique identifier for a" >> /etc/fstab
@@ -28,5 +37,6 @@ echo -e "$VAR_UUID\t/var\txfs\tdefaults\t0\t0" >> /etc/fstab
 echo -e "" >> /etc/fstab
 echo -e "#$SWAP_UUID\tnone\tswap\tsw\t0\t0" >> /etc/fstab
 
+#reload fstab
 update-initramfs -u -k all
 btrfs balance start /
