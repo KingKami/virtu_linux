@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt install git lynx curl htop php php-gd php-mysql php-xml php-fpm php-mbstring openssl php-tidy php-curl php-zip mariadb-server composer nginx -y
+apt install git lynx curl htop net-tools xz-utils mlocate rsync php php-gd php-mysql php-xml php-fpm php-mbstring openssl php-tidy php-curl php-zip mariadb-server composer nginx -y
 
 cp nginx/site-enabled/bookstack /etc/nginx/sites-enabled/bookstack
 cp nginx/site-enabled/default /etc/nginx/sites-enabled/default

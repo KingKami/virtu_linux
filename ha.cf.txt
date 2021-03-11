@@ -1,0 +1,9 @@
+logfile /var/log/heartbeat.log
+logfacility daemon
+node debian
+node debian2
+keepalive 1
+deadtime 4
+bcast ens33
+ping 192.168.1.100
+auto_failback yes
