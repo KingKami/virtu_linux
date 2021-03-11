@@ -25,7 +25,7 @@ apt install drbd-utils heartbeat -y
 # enable drbd in kernel
 modprobe drbd
 systemctl enable drbd heartbeat
-systemctl stop drbd heartbeat
+systemctl stop drbd heartbeat nginx mysql
 
 # set config file edit resource name to match your need
 cp -f drbd/drbd.conf /etc/drbd.conf
@@ -56,14 +56,20 @@ if [ "$HOSTNAME" = "$PRIMARY_NODE_HOSTNAME" ]; then
     mount -v $DRBD_DEVICE_NAME ${DRBD_MOUNT_POINT}
 
     # move bookstack and mysql data files
-    systemctl stop nginx mysql
     mv /var/www/html/BookStack "${DRBD_MOUNT_POINT}/Bookstack"
     mv /var/lib/mysql "${DRBD_MOUNT_POINT}/mysql"
     ln --safelink "${DRBD_MOUNT_POINT}/Bookstack" /var/www/html/
     ln --safelink "${DRBD_MOUNT_POINT}/mysql" /var/lib/
-    systemctl start nginx mysql
+
 fi
 
+if [ "$HOSTNAME" = "$SECONDARY_NODE_HOSTNAME" ]; then
+    # delete bookstack and mysql data on secondary node and point the node to look in the drbd disk
+    rm -rf /var/www/html/BookStack
+    rm -rf /var/lib/mysql
+    ln --safelink "${DRBD_MOUNT_POINT}/Bookstack" /var/www/html/
+    ln --safelink "${DRBD_MOUNT_POINT}/mysql" /var/lib/
+fi
 
 # you can check if the drbd is up with the following commands
 # drbd-overview
@@ -90,4 +96,4 @@ sed -i "s#drbd_mount_point#${DRBD_MOUNT_POINT}#" "/etc/ha.d/haresources"
 # add the option restart=on-failure or restart=on-abort to your services
 # on-failure could keep your service in a restart loop if you have any configuration error
 
-systemctl start drbd heartbeat
+systemctl start drbd heartbeat nginx mysql
