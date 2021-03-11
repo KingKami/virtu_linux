@@ -1,7 +1,7 @@
 server {
         listen 80;
         listen 443;
-        root /var/www/html/BookStack/public;
+        root /var/www/html/Bookstack/public;
         index  index.php index.html index.htm;
         server_name  wiki.esgi.local;
 
