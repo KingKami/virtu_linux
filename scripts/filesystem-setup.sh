@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 LV_ROOT="/dev/mapper/vg2-lv_root"
