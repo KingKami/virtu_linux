@@ -71,7 +71,7 @@ if [ "$HOSTNAME" = "$SECONDARY_NODE_HOSTNAME" ]; then
     ln --safelink "${DRBD_MOUNT_POINT}/mysql" /var/lib/
 fi
 
-# you can check if the drbd is up with the following commands
+# you can check if the drbd status with the following commands
 # drbd-overview
 # cat /proc/drbd
 # tail -f /var/log/messages
