@@ -1,45 +1,71 @@
-HA Linux
+# Procédure d'installation de BookStack dans un environement hautement disponible
 
-DEB10 NetInstall minimal
+En éxecutant les scripts, vous obtiendrez à la fin une installation de BookStack redondé via heartbeat et drbd
 
-ssh server
-utilitaires
+Les fichiers de configuration sont fourni, afin que le script puisse bien les copier et effectuer ses actions clonez ce projet.
 
-Disques : 2 x 10Go 1Go RAM
+:warning: Votre installation de Nginx peut ne pas autoriser les liens symboliques, activer l'option en ajoutant la ligne `disable_symlinks off;` dans la section `http` dans le fichier `/etc/nginx/nginx.conf`
 
-Partitionnement:
 
-sda1
-/boot (RAID 1) 500Mo ext2
+## Configuration des disques
 
-sda2 (PV) (RAID 1)
-/ : btrfs (/dev/VGROOT/lv_root) 3Go
-/var : xfs (/dev/VGROOT/lv_var) 2Go
-swap : zramfs (/dev/zram0 : 100Mo)
+Créez une machine virtuelle debian 10 avec 2 disques de 10GB
 
-1.  Authentification par clés entre le poste de travail et la VM Debian
-2.  Autoriser l'accès de la VM par le prof
-3.  Améliorer l'environnement SHELL (prompt, alias....)
-4.  Installer l'outil cheat
+Lors de l'installation de l'os effectuez les étapes suivantes :
 
-BootStack (Wiki wysiwig)
-Reverse Proxy ( wiki.esgi.local)
+- Sur le disque 1
+  - créez une partition 1 de 500MB qui servira pour le /boot
+  - créez une partition 2 avec le reste du disque qui servira pour le volume group
 
-5.  Clonage de la VM
-6.  Mise en oeuvre d'une solution de fail-over (actif-passif) à base de DRBD
-    le site wiki.esgi.local est une IP virtuelle
+- Sur le disque 2 créez les mêmes partition avec les même tailles
+  - créez une partition 1 de 500MB qui servira pour le /boot
+  - créez une partition 2 avec le reste du disque qui servira pour le volume group
 
-7.  Mise en oeurve de HeartBeat
+- raid md0 avec les 2 partitions 1
+- raid md1 avec les 2 partitions 2
 
-8.  HA malgré l'arret d'un serveur (coupure de HeartBeat)
-9.  HA malgré le reboot des 2 serveurs
-10. HA malgré l'arret d'un service ( serveur Web / serveur de base MariaDB )
+- Créez une partition ext2 sur le volume raid md0 /boot ext2
 
-TP à rendre pour le vendredi 12 mars 23:59:59
+- Créez un volume group sur le volume raid md1
+  - Créez les logical volume suivant :
+    - lv_root 500MB que vous monterez par la suite sur / formaté en btrfs
+    - lv_var 2GB que vous monterez par la suite sur /var formaté en xfs
+    - lv_swap 100MB que vous monterez par la suite comme swap
 
-5SRC2.Nom.Prenom.HA.gz
+Une fois que l'os est fonctionel, vous pouvez executer le script `scripts/filesystem-setup.sh`
 
-Facultatif :
+:warning: Executez le script à vos risques et peril, les modifications effectués peuvent boulverser votre système.
+Les commandes restent les mêmes et sont executables une à une.
 
-Keycloak (SSO) (SAML2)
-HTTPS
+:warning: Pensez à remplacer les variables par vos valeurs !
+
+Le script va vous permettre de remplacer le swap par du zramfs et de nettoyer votre fichier fstab pour que vos différents volumes se montent bien au démarrage.
+
+
+## Installation de Cheat
+
+Suivre le script `scripts/install-cheat.sh`
+
+Le script installera l'outil cheat qui permet d'avoir des informations sur des commandes avec des exemples d'utilisation.
+
+## Installation de BookStack
+
+Suivre le script `scripts/install-bookstack.sh`
+
+:warning: Pensez à remplacer les variables par vos valeurs
+
+:warning: Vous serez prompté pour rentrer le mot de passe root pour vous connecter à MariaDB.
+
+Le script installera Bookstack, Nginx, PHP et MariaDB.
+
+
+
+## Installation et Configuration de DRBD et Heartbeat
+
+Suivre le script `scripts/drbd-heartbeat.sh`
+
+:warning: Pensez à remplacer les variables par vos valeurs
+
+:warning: L'execution de ce script peut entraîner des pertes de données à executer avec précautions
+
+Le script installera DRBD et heartbeat et vous aidera à les configurer pour obtenir un service aussi résilient que possible.
